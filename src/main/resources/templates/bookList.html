@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Books List</title>
+  <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+<header>
+  <h2>Books List</h2>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/books">Books</a>
+    <a href="/magazines">Magazines</a>
+    <a href="/discMags">DiscMags</a>
+    <a href="/tickets">Tickets</a>
+    <a href="/cart/view">Cart</a>
+    <form th:action="@{/logout}" method="post">
+      <input type="submit" value="Sign Out"/>
+    </form>
+  </nav>
+</header>
+
+<main>
+  <h3>Books Available</h3>
+  <div class="book-list">
+    <table>
+      <thead>
+      <tr>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>How Many To Add to Cart</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="book : ${books}">
+        <td th:text="${book.title}">Book Title</td>
+        <td th:text="${book.author}">Author Name</td>
+        <td th:text="${book.price}">Price</td>
+        <td th:text="${book.quantity}">Quantity</td>
+        <td>
+          <a th:href="@{/books/editBook/{id}(id=${book.id})}">Edit</a>
+
+          <form th:action="@{/books/delete/{id}(id=${book.id})}" method="get" style="display:inline;">
+            <button type="submit">Delete</button>
+          </form>
+
+          <form th:action="@{/cart/add}" method="post" style="display:inline;">
+            <input type="hidden" name="id" th:value="${book.id}" />
+            <input type="hidden" name="price" th:value="${book.price}" />
+            <input type="number" name="quantity" value="1" min="1" style="width: 50px;" />
+            <button type="submit">Add to Cart</button>
+          </form>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <a href="/books/addBook">Add a New Book</a>
+</main>
+
+<footer>
+  <p>&copy; 2024 Simple E-Commerce. All rights reserved.</p>
+</footer>
+</body>
+</html>

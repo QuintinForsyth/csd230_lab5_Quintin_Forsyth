@@ -1,0 +1,78 @@
+---
+title: CSD230 Lab1 UML
+---
+classDiagram
+    class CartItem {
+        <<abstract>>
+        +double price
+        +int quantity
+        +String description
+        +Cart cart
+        +toString()
+        +equals()
+        +hashCode()
+        +getters/setters
+    }
+
+    class Cart {
+        +List~CartItem~ items
+        +addItem(CartItem item)
+        +getItems() List~CartItem~
+        +setItems(List~CartItem~ items)
+        +toString()
+        +equals()
+        +hashCode()
+    }
+    Cart "1" *-- "many" CartItem
+
+    class Publication {
+        <<abstract>>
+        +String title
+        +int copies
+        +toString()
+        +equals()
+        +hashCode()
+        +sellItem()
+        +getters/setters
+    }
+    CartItem <|-- Publication
+
+    class Book {
+        +String author
+        +String ISBN
+        +toString()
+        +equals()
+        +hashCode()
+    }
+    Publication <|-- Book
+
+    class Magazine {
+        +int orderQty
+        +Date currIssue
+        +toString()
+        +equals()
+        +hashCode()
+        +getters/setters
+    }
+    Publication <|-- Magazine
+
+    class DiscMag {
+        +boolean hasDisc
+        +getHasDisc() boolean
+        +setHasDisc(boolean hasDisc)
+        +toString()
+        +equals()
+        +hashCode()
+    }
+    Magazine <|-- DiscMag
+
+    class Ticket {
+        +String text
+        +sellItem()
+        +getText() String
+        +setText(String text)
+        +toString()
+        +equals()
+        +hashCode()
+    }
+    CartItem <|-- Ticket

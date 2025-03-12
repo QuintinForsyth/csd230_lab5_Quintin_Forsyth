@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Book</title>
+</head>
+<body>
+
+<header>
+    <h2>Edit Book</h2>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/books">Books</a>
+        <a href="/magazines">Magazines</a>
+        <a href="/discMags">DiscMags</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/cart/view">Cart</a>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+    </nav>
+</header>
+
+<form th:action="@{/books/editBook(id=${book.id})}" method="post" th:object="${book}">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
+    <table>
+        <tr>
+            <td>Title:</td>
+            <td><input type="text" th:field="*{title}"/></td>
+        </tr>
+
+        <tr>
+            <td>Author:</td>
+            <td><input type="text" th:field="*{author}"/></td>
+        </tr>
+
+        <tr>
+            <td>ISBN:</td>
+            <td><input type="text" th:field="*{isbn}"/></td>
+        </tr>
+
+        <tr>
+            <td>Copies:</td>
+            <td><input type="text" th:field="*{copies}"/></td>
+        </tr>
+
+        <tr>
+            <td>Price:</td>
+            <td><input type="text" th:field="*{price}"/></td>
+        </tr>
+
+        <tr>
+            <td>Quantity:</td>
+            <td><input type="text" th:field="*{quantity}"/></td>
+        </tr>
+
+        <tr>
+            <td>Description:</td>
+            <td><input type="text" th:field="*{description}"/></td>
+        </tr>
+
+        <tr>
+            <td>Cart:</td>
+            <td><input type="text" th:field="*{cart}"/></td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td><button type="submit">Save Changes</button></td>
+        </tr>
+    </table>
+
+    <p>Use this form to edit book details.</p>
+</form>
+
+<p><a href="#" th:href="@{/books}">Return to Book List</a></p>
+
+</body>
+</html>

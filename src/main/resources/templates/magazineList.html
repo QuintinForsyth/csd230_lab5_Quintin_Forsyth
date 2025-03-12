@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Magazines List</title>
+</head>
+<body>
+<header>
+    <h2>Magazines List</h2>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/books">Books</a> <!-- Link to Books -->
+        <a href="/magazines">Magazines</a> <!-- Link to Magazines -->
+        <a href="/discMags">DiscMags</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/cart/view">Cart</a>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+    </nav>
+</header>
+
+<main>
+    <h3>Magazines Available</h3>
+    <div class="magazine-list">
+        <table>
+            <thead>
+            <tr>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Order Quantity</th>
+                <th>Current Issue</th>
+                <th>Has Disc</th>
+                <th>How Many To Add to Cart</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="magazine : ${magazines}">
+                <td th:text="${magazine.title}">Magazine Title</td>
+                <td th:text="${magazine.price}">Price</td>
+                <td th:text="${magazine.quantity}">Quantity</td>
+                <td th:text="${magazine.orderQty}">Order Quantity</td>
+                <td th:text="${#dates.format(magazine.currIssue, 'yyyy-MM-dd')}">Current Issue</td>
+
+                <!-- Check if magazine is an instance of DiscMag and display Yes/No -->
+                <td th:text="${magazine instanceof T(csd230.lab2.entities.DiscMag) ? (magazine.hasDisc ? 'Yes' : 'No') : 'No'}">Has Disc</td>
+
+                <td>
+                    <a th:href="@{/magazines/editMagazine/{id}(id=${magazine.id})}">Edit</a>
+
+                    <form th:action="@{/magazines/delete/{id}(id=${magazine.id})}" method="get" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+
+                    <form th:action="@{/cart/add}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${magazine.id}" />
+                        <input type="hidden" name="price" th:value="${magazine.price}" />
+                        <input type="number" name="quantity" value="1" min="1" style="width: 50px;" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <a href="/magazines/addMagazine">Add a New Magazine</a> <!-- Link to add a new magazine -->
+</main>
+
+<footer>
+    <p>&copy; 2024 Simple E-Commerce. All rights reserved.</p>
+</footer>
+</body>
+</html>

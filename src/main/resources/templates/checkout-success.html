@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="/styles/main.css">
+</head>
+<body>
+
+<header>
+    <h2>Thank You for Your Order!</h2>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/books">Books</a>
+        <a href="/magazines">Magazines</a>
+        <a href="/discMags">DiscMags</a>
+        <a href="/tickets">Tickets</a>
+        <a href="/cart/view">Cart</a>
+        <form th:action="@{/logout}" method="post">
+            <input type="submit" value="Sign Out"/>
+        </form>
+    </nav>
+</header>
+
+<main>
+    <h3>Your order has been successfully placed!</h3>
+    <p>Thank you for shopping with us. We hope to see you again soon!</p>
+    <a href="/cart/view">Return to Cart</a>
+</main>
+
+<footer>
+    <p>&copy; 2024 Simple E-Commerce. All rights reserved.</p>
+</footer>
+
+</body>
+</html>
