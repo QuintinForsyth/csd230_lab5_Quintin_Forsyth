@@ -1,20 +1,25 @@
 package csd230.lab2.controllers;
 
+
 import csd230.lab2.entities.Book;
 import csd230.lab2.repositories.BookRepository;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/rest/book")
 public class BookRestController {
     private final BookRepository bookRepository;
 
+
     public BookRestController(BookRepository bookRepository) {
         this.bookRepository = bookRepository;
     }
+
 
     @CrossOrigin
     @GetMapping()
@@ -23,6 +28,7 @@ public class BookRestController {
         return all;
     }
 
+
     @GetMapping
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = "application/json")
     public Optional<Book> getBook(@PathVariable Long id) {
@@ -30,13 +36,16 @@ public class BookRestController {
         return book;
     }
 
+
     @PostMapping()
     Book newBook(@RequestBody Book newBook) {
         return bookRepository.save(newBook);
     }
 
+
     @PutMapping("/{id}")
     Book replaceBook(@RequestBody Book newBook, @PathVariable Long id) {
+
 
         return bookRepository.findById(id)
                 .map(book -> {
@@ -47,6 +56,7 @@ public class BookRestController {
                     book.setPrice(newBook.getPrice());
                     book.setTitle(newBook.getTitle());
                     book.setQuantity(newBook.getQuantity());
+
 
                     return bookRepository.save(book);
                 })

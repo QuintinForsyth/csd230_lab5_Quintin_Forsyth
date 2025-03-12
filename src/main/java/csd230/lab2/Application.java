@@ -1,9 +1,13 @@
 package csd230.lab2;
 
-import csd230.lab2.entities.*;
-import csd230.lab2.repositories.*;
 import com.github.javafaker.Code;
 import com.github.javafaker.Faker;
+import com.github.javafaker.Number;
+import csd230.lab2.entities.Book;
+import csd230.lab2.entities.Cart;
+import csd230.lab2.repositories.BookRepository;
+import csd230.lab2.repositories.CartItemRepository;
+import csd230.lab2.repositories.CartRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,114 +15,90 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.Optional;
 
 @SpringBootApplication
 public class Application {
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
-    @Autowired
-    private CartItemRepository cartItemRepository;
-
-    @Autowired
-    private CartRepository cartRepository;
-
-    @Autowired
-    private BookRepository bookRepository;
-
-    @Autowired
-    private DiscMagRepository discMagRepository;
-
-    @Autowired
-    private MagazineRepository magazineRepository;
-
-    @Autowired
-    private TicketRepository ticketRepository;
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
+    // Allow cross-origin requests (CORS) for React frontend
     @Bean
-    public CommandLineRunner demo() {
-        return (args) -> {
-            Faker faker = new Faker();
-            Code code = faker.code();
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("http://localhost:5173");
+            }
+        };
+    }
 
-            // Create a cart
+    @Autowired
+    CartItemRepository cartItemRepository;
+
+    @Autowired
+    CartRepository cartRepository;
+
+    @Bean
+    public CommandLineRunner demo(BookRepository repository) {
+        return (args) -> {
             Cart cart = new Cart();
             cartRepository.save(cart);
 
-            // Create and save books
-            for (int i = 0; i < 5; i++) {
-                Book book = new Book(
-                        faker.number().randomDouble(2, 10, 100),
-                        faker.number().numberBetween(1, 50),
-                        "Book: " + faker.book().title(),
-                        faker.book().title(),
-                        faker.number().numberBetween(5, 20),
-                        faker.book().author(),
-                        code.isbn10()
-                );
+            Faker faker = new Faker();
+            com.github.javafaker.Book fakeBook = faker.book();
+            Number number = faker.number();
+            Code code = faker.code();
+
+            // Save a few books
+            for (int i = 0; i < 2; i++) {
+                String title = fakeBook.title();
+                double price = number.randomDouble(2, 10, 100);
+                int copies = number.numberBetween(5, 20);
+                int quantity = number.numberBetween(1, 50);
+                String author = fakeBook.author();
+                String isbn = code.isbn10();
+                String description = "Book: " + title;
+
+                Book book = new Book(price, quantity, description, title, copies, author, isbn);
                 cart.addItem(book);
-                bookRepository.save(book);
+                repository.save(book);
             }
+
             cartRepository.save(cart);
 
-            // Log books
+            // Fetch all books
             log.info("Books found with findAll():");
-            bookRepository.findAll().forEach(book -> log.info(book.toString()));
+            repository.findAll().forEach(book -> log.info(book.toString()));
 
-            // Create and save magazines
-            for (int i = 0; i < 3; i++) {
-                Magazine magazine = new Magazine(
-                        faker.number().randomDouble(2, 5, 50),
-                        faker.number().numberBetween(10, 30),
-                        "Magazine: " + faker.book().title(),
-                        faker.book().title(),
-                        faker.number().numberBetween(1, 100),
-                        faker.number().numberBetween(10, 50),
-                        faker.date().birthday()
+            // Fetch an individual book by ID (handle missing case)
+            Optional<Book> bookOptional = repository.findById(1L);
+            if (bookOptional.isPresent()) {
+                Book book = bookOptional.get();
+                log.info("Book found with findById(1L): " + book);
+
+                // Fetch book by ISBN
+                Optional<Book> foundByIsbn = repository.findByIsbn(book.getIsbn());
+                foundByIsbn.ifPresentOrElse(
+                        b -> log.info("Book found with ISBN: " + b),
+                        () -> log.info("No book found with that ISBN.")
                 );
-                magazineRepository.save(magazine);
+            } else {
+                log.info("No book found with ID 1.");
             }
 
-            // Log magazines
-            log.info("Magazines found with findAll():");
-            magazineRepository.findAll().forEach(magazine -> log.info(magazine.toString()));
-
-            // Create and save disc magazines
-            for (int i = 0; i < 3; i++) {
-                DiscMag discMag = new DiscMag();
-                discMag.setPrice(faker.number().randomDouble(2, 5, 50));
-                discMag.setQuantity(faker.number().numberBetween(10, 30));
-                discMag.setDescription("DiscMag: " + faker.book().title());
-                discMag.setTitle(faker.book().title());
-                discMag.setCopies(faker.number().numberBetween(1, 100));
-                discMag.setOrderQty(faker.number().numberBetween(10, 50));
-                discMag.setCurrIssue(faker.date().birthday());
-                discMag.setHasDisc(faker.bool().bool());
-                discMagRepository.save(discMag);
-            }
-
-            // Log disc magazines
-            log.info("DiscMags found with findAll():");
-            discMagRepository.findAll().forEach(discMag -> log.info(discMag.toString()));
-
-            // Create and save tickets
-            for (int i = 0; i < 4; i++) {
-                Ticket ticket = new Ticket(
-                        faker.number().randomDouble(2, 1, 20),
-                        faker.number().numberBetween(1, 5),
-                        "Ticket: " + faker.book().title(),
-                        "Event: " + faker.company().name()
-                );
-                ticketRepository.save(ticket);
-            }
-
-            // Log tickets
-            log.info("Tickets found with findAll():");
-            ticketRepository.findAll().forEach(ticket -> log.info(ticket.toString()));
+            // Fetch all items in cart
+            log.info("Cart items found:");
+            cartRepository.findAll().forEach(cartItem -> {
+                log.info(cartItem.toString());
+                cartItemRepository.findAll().forEach(item -> log.info("Cart item: " + item));
+            });
         };
     }
 }

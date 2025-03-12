@@ -12,14 +12,14 @@ public class Book extends Publication {
     private String author;
 
     @Column(name = "ISBN")
-    private String ISBN;
+    private String isbn;
 
     public Book() {}
 
     public Book(double price, int quantity, String description, String title, int copies, String author, String isbn) {
         super(price, quantity, description, title, copies);
         this.author = author;
-        this.ISBN = isbn;
+        this.isbn = isbn;
     }
 
     // Getters and Setters
@@ -33,18 +33,18 @@ public class Book extends Publication {
     }
 
     public String getIsbn() {
-        return ISBN;
+        return isbn;
     }
 
     public void setIsbn(String isbn) {
-        this.ISBN = isbn;
+        this.isbn = isbn;
     }
 
     @Override
     public String toString() {
         return "Book{" +
                 "author='" + author + '\'' +
-                ", ISBN='" + ISBN + '\'' +
+                ", ISBN='" + isbn + '\'' +
                 ", " + super.toString() +
                 '}';
     }
@@ -56,11 +56,11 @@ public class Book extends Publication {
         if (!super.equals(o)) return false;
         Book book = (Book) o;
         return Objects.equals(author, book.author) &&
-                Objects.equals(ISBN, book.ISBN);
+                Objects.equals(isbn, book.isbn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), author, ISBN);
+        return Objects.hash(super.hashCode(), author, isbn);
     }
 }

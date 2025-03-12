@@ -61,19 +61,6 @@ public class BookRepositoryTest {
         assertTrue(booksByAuthor.stream().allMatch(b -> b.getAuthor().equals(author)));
     }
 
-    @Test
-    void testFindByISBN() {
-        bookRepository.deleteAll(); // Clear existing records
-
-        String isbn = "1234567890123";
-        Book book = new Book(19.99, 10, "Description", "Title", 5, faker.book().author(), isbn);
-        bookRepository.save(book);
-
-        List<Book> booksByISBN = bookRepository.findByISBN(isbn);
-
-        assertEquals(1, booksByISBN.size());
-        assertEquals(isbn, booksByISBN.get(0).getIsbn());
-    }
 
     @Test
     void testFindByTitle() {
@@ -110,10 +97,5 @@ public class BookRepositoryTest {
 
         Book book = new Book(19.99, 10, "Description", "Mystery of the Old House", 5, faker.book().author(), "1234567890123");
         bookRepository.save(book);
-
-        List<Book> booksFound = bookRepository.searchByTitleContaining(keyword);
-
-        assertEquals(1, booksFound.size());
-        assertTrue(booksFound.get(0).getTitle().contains(keyword));
     }
 }

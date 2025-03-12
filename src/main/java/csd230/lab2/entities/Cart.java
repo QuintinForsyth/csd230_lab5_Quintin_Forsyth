@@ -14,7 +14,7 @@ public class Cart {
     private Long id;
 
     // LinkedHashSet for NO duplicate items
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<CartItem> items = new LinkedHashSet<>();
 
     public Cart() {
